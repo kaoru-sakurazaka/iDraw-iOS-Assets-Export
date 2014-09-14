@@ -1,0 +1,78 @@
+var openPanel = [NSOpenPanel openPanel]
+
+[openPanel setCanChooseFiles:NO]
+[openPanel setCanChooseDirectories:YES]
+[openPanel setResolvesAliases:NO]
+[openPanel setAllowsMultipleSelection:NO]
+
+result = [openPanel runModal]
+
+if( result == NSOKButton ){
+    
+    var directoryURL = [openPanel directoryURL]
+        
+    var doc = app.activeDocument()
+    
+    var params = []
+
+    params.push({
+        "idiom" : "universal",
+        "scale" : 1,
+    },{
+        "idiom" : "universal",
+        "scale" : 2,
+    },{
+        "idiom" : "universal",
+        "scale" : 3,
+    })
+
+    if( params.length > 0 ){
+
+        var contents = [NSMutableString string]
+        [contents appendFormat:"{\n"]
+        [contents appendFormat:"    \"images\" : [\n"]
+        
+        for( var i = 0; i < params.length ; i++ ){
+        
+            var param = params[i];
+            var data = [[NSMutableData alloc] init];
+            var dst = CGImageDestinationCreateWithData( data, "public.png", 1, nil )
+
+            var option = [NSDictionary dictionaryWithObjectsAndKeys:param["scale"],"scale",NO,"includeBackground",nil];
+            var image = [doc exportImage:option];
+            CGImageDestinationAddImage( dst, image, nil );
+
+            CGImageDestinationFinalize(dst)
+            CFRelease(dst)
+    
+            var file = param["idiom"]+"_"+param["scale"]+"x.png"
+            var fileURL = [NSURL URLWithString:file relativeToURL:directoryURL]
+            [data writeToURL:fileURL atomically:YES]
+            [data release]
+
+            [contents appendFormat:"        {\n"]
+            [contents appendFormat:"            \"idiom\" : \"%@\",\n",param["idiom"]]
+            [contents appendFormat:"            \"filename\" : \"%@\",\n",file]
+            [contents appendFormat:"            \"scale\" : \"%@x\"\n",param["scale"]]
+    
+            if( i < params.length-1 ){
+                [contents appendFormat:"        },\n"]
+            }else{
+                [contents appendFormat:"        }\n"]
+            }
+        }
+
+        [contents appendFormat:"    ],\n"]
+
+        [contents appendFormat:"    \"info\" : {\n"]
+        [contents appendFormat:"        \"version\" : 1,\n"]
+        [contents appendFormat:"        \"author\" : \"xcode\"\n"]
+        [contents appendFormat:"    },\n"]
+
+        [contents appendFormat:"}"]
+
+        var fileURL = [NSURL URLWithString:"Contents.json" relativeToURL:directoryURL]
+        [contents writeToURL:fileURL atomically:YES]
+    }        
+}
+

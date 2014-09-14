@@ -1,0 +1,441 @@
+/*
+    2014/09/15
+    iOS Icons Export
+*/
+
+var shouldSave = false;
+
+var isPhoneOS8Later = true;
+var isPhoneOS7Later = true;
+var isPhoneOS6Prior = false;
+
+var isPadOS7Later = true;
+var isPadOS6Prior = false;
+
+var isCarPlay = false;
+var isPreRendered = true;
+
+// -----------------------------------------------------------------------
+//  option menu.
+// -----------------------------------------------------------------------
+// Create window
+var window = [[NSWindow alloc] init]
+[window setTitle:"Export iOS Icons"]
+[window setFrame:NSMakeRect( 0, 0, 200, 256 ) display:false]
+
+// iPhone Label
+var labelPhone = [[NSTextField alloc] initWithFrame:NSMakeRect(15,205,60,18)]
+[labelPhone setStringValue:"iPhone"]
+[labelPhone setAlignment:NSRightTextAlignment]
+[labelPhone setEditable:NO]
+[labelPhone setSelectable:NO]
+[labelPhone setBordered:NO]
+[labelPhone setDrawsBackground:NO]
+[labelPhone setFont:[NSFont systemFontOfSize:13]]
+[[window contentView] addSubview:labelPhone]
+
+
+// iPhone OS8 Later check button
+var buttonPhoneOS8Later = [[NSButton alloc] initWithFrame:NSMakeRect(80,205,100,18)]
+[buttonPhoneOS8Later setTitle:"iOS 8.0 Later"]
+[buttonPhoneOS8Later setBezelStyle:NSThickSquareBezelStyle]
+[buttonPhoneOS8Later setButtonType:NSSwitchButton]
+[buttonPhoneOS8Later setFont:[NSFont systemFontOfSize:13]]
+[buttonPhoneOS8Later setState:isPhoneOS8Later]
+[[window contentView] addSubview:buttonPhoneOS8Later]
+[buttonPhoneOS8Later setJSTargetFunction:"actionButtonPhoneOS8Later"]
+
+
+// iPhone OS7 Later check button
+var buttonPhoneOS7Later = [[NSButton alloc] initWithFrame:NSMakeRect(80,185,100,18)]
+[buttonPhoneOS7Later setTitle:"iOS 7.0 Later"]
+[buttonPhoneOS7Later setBezelStyle:NSThickSquareBezelStyle]
+[buttonPhoneOS7Later setButtonType:NSSwitchButton]
+[buttonPhoneOS7Later setFont:[NSFont systemFontOfSize:13]]
+[buttonPhoneOS7Later setState:isPhoneOS7Later]
+[[window contentView] addSubview:buttonPhoneOS7Later]
+[buttonPhoneOS7Later setJSTargetFunction:"actionButtonPhoneOS7Later"]
+
+
+// iPhone OS6 Prior check button
+var buttonPhoneOS6Prior = [[NSButton alloc] initWithFrame:NSMakeRect(80,165,100,18)]
+[buttonPhoneOS6Prior setTitle:"iOS 6.1 Prior"]
+[buttonPhoneOS6Prior setBezelStyle:NSThickSquareBezelStyle]
+[buttonPhoneOS6Prior setButtonType:NSSwitchButton]
+[buttonPhoneOS6Prior setFont:[NSFont systemFontOfSize:13]]
+[buttonPhoneOS6Prior setState:isPhoneOS6Prior]
+[[window contentView] addSubview:buttonPhoneOS6Prior]
+[buttonPhoneOS6Prior setJSTargetFunction:"actionButtonPhoneOS6Prior"]
+
+
+// iPad Label
+var labelPad = [[NSTextField alloc] initWithFrame:NSMakeRect(15,142,60,18)]
+[labelPad setStringValue:"iPad"]
+[labelPad setAlignment:NSRightTextAlignment]
+[labelPad setEditable:NO]
+[labelPad setSelectable:NO]
+[labelPad setBordered:NO]
+[labelPad setDrawsBackground:NO]
+[labelPad setFont:[NSFont systemFontOfSize:13]]
+[[window contentView] addSubview:labelPad]
+
+
+// iPad OS7 Later check button
+var buttonPadOS7Later = [[NSButton alloc] initWithFrame:NSMakeRect(80,142,100,18)]
+[buttonPadOS7Later setTitle:"iOS 7.0 Later"]
+[buttonPadOS7Later setBezelStyle:NSThickSquareBezelStyle]
+[buttonPadOS7Later setButtonType:NSSwitchButton]
+[buttonPadOS7Later setFont:[NSFont systemFontOfSize:13]]
+[buttonPadOS7Later setState:isPadOS7Later]
+[[window contentView] addSubview:buttonPadOS7Later]
+[buttonPadOS7Later setJSTargetFunction:"actionButtonPadOS7Later"]
+
+
+// iPad OS6 Prior check button
+var buttonPadOS6Prior = [[NSButton alloc] initWithFrame:NSMakeRect(80,122,100,18)]
+[buttonPadOS6Prior setTitle:"iOS 6.1 Prior"]
+[buttonPadOS6Prior setBezelStyle:NSThickSquareBezelStyle]
+[buttonPadOS6Prior setButtonType:NSSwitchButton]
+[buttonPadOS6Prior setFont:[NSFont systemFontOfSize:13]]
+[buttonPadOS6Prior setState:isPadOS6Prior]
+[[window contentView] addSubview:buttonPadOS6Prior]
+[buttonPadOS6Prior setJSTargetFunction:"actionButtonPadOS6Prior"]
+
+
+// CarPlay Label
+var labelCarPlay = [[NSTextField alloc] initWithFrame:NSMakeRect(15,97,60,18)]
+[labelCarPlay setStringValue:"CarPlay"]
+[labelCarPlay setAlignment:NSRightTextAlignment]
+[labelCarPlay setEditable:NO]
+[labelCarPlay setSelectable:NO]
+[labelCarPlay setBordered:NO]
+[labelCarPlay setDrawsBackground:NO]
+[labelCarPlay setFont:[NSFont systemFontOfSize:13]]
+[[window contentView] addSubview:labelCarPlay]
+
+// CarPlay check button
+var buttonCarPlay = [[NSButton alloc] initWithFrame:NSMakeRect(80,97,100,18)]
+[buttonCarPlay setTitle:"CarPlay"]
+[buttonCarPlay setBezelStyle:NSThickSquareBezelStyle]
+[buttonCarPlay setButtonType:NSSwitchButton]
+[buttonCarPlay setFont:[NSFont systemFontOfSize:13]]
+[buttonCarPlay setState:isCarPlay]
+[[window contentView] addSubview:buttonCarPlay]
+[buttonCarPlay setJSTargetFunction:"actionButtonCarPlay"]
+
+//  border
+var box1 = [[NSBox alloc] initWithFrame:NSMakeRect( 10, 85, 180, 1 )]
+[box1 setBoxType:NSBoxSeparator]
+[box1 setBorderColor:[NSColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:1.0]]
+[[window contentView] addSubview:box1]
+
+// Pre-rendered check button
+var buttonPreRendered = [[NSButton alloc] initWithFrame:NSMakeRect(80,57,100,18)]
+[buttonPreRendered setTitle:"Pre-rendered"]
+[buttonPreRendered setBezelStyle:NSThickSquareBezelStyle]
+[buttonPreRendered setButtonType:NSSwitchButton]
+[buttonPreRendered setFont:[NSFont systemFontOfSize:13]]
+[buttonPreRendered setState:isPreRendered]
+[[window contentView] addSubview:buttonPreRendered]
+[buttonPreRendered setJSTargetFunction:"actionButtonPreRendered"]
+
+// Create OK button
+var buttonOK = [[NSButton alloc] initWithFrame:NSMakeRect(105, 9, 82, 32)]
+[buttonOK setTitle:"Save"]
+[buttonOK setBezelStyle:NSRoundedBezelStyle]
+[buttonOK setKeyEquivalent:"\r"]
+[buttonOK setFont:[NSFont systemFontOfSize:13]]
+[[window contentView] addSubview:buttonOK]
+[buttonOK setJSTargetFunction:"actionButtonOK"];
+
+// Create cancel button
+var buttonCancel = [[NSButton alloc] initWithFrame:NSMakeRect(23, 9, 82, 32)]
+[buttonCancel setTitle:"Cancel"]
+[buttonCancel setBezelStyle:NSRoundedBezelStyle]
+[buttonCancel setKeyEquivalent:"\033"]
+[buttonCancel setFont:[NSFont systemFontOfSize:13]]
+[[window contentView] addSubview:buttonCancel]
+[buttonCancel setJSTargetFunction:"actionButtonCancel"]
+
+[NSApp runModalForWindow:window]
+
+// -----------------------------------------------------------------------
+//  callbacks.
+// -----------------------------------------------------------------------
+function actionButtonPhoneOS8Later( sender ){
+    isPhoneOS8Later = !isPhoneOS8Later;
+}
+
+function actionButtonPhoneOS7Later( sender ){
+    isPhoneOS7Later = !isPhoneOS7Later;
+}
+
+function actionButtonPhoneOS6Prior( sender ){
+    isPhoneOS6Prior = !isPhoneOS6Prior;
+}
+
+function actionButtonPadOS7Later( sender ){
+    isPadOS7Later = !isPadOS7Later;
+}
+
+function actionButtonPadOS6Prior( sender ){
+    isPadOS6Prior = !isPadOS6Prior;
+}
+
+function actionButtonCarPlay( sender ){
+    isCarPlay = !isCarPlay;
+}
+
+function actionButtonPreRendered( sender ){
+    isPreRendered = !isPreRendered;
+}
+
+function actionButtonOK( sender ){
+    shouldSave = true
+    [window orderOut:nil]
+    [NSApp stopModal]
+}
+
+function actionButtonCancel( sender ){
+    [window orderOut:nil]
+    [NSApp stopModal]
+}
+
+
+// -----------------------------------------------------------------------
+//  choice export directory.
+// -----------------------------------------------------------------------
+if( shouldSave ){
+
+    var openPanel = [NSOpenPanel openPanel]
+
+    [openPanel setCanChooseFiles:NO]
+    [openPanel setCanChooseDirectories:YES]
+    [openPanel setResolvesAliases:NO]
+    [openPanel setAllowsMultipleSelection:NO]
+
+    result = [openPanel runModal]
+
+    if( result == NSOKButton ){
+
+        var directoryURL = [openPanel directoryURL]
+
+        var doc = app.activeDocument()
+        var canvasSize = [doc canvasSize].width
+    
+        var params = []
+        
+        //  Spotlighte - iOS 5,6
+        //  Settings   - iOS 5,6,7,8
+        if( isPhoneOS6Prior ){
+            params.push({
+                "idiom" : "iphone",
+                "size"  : 29.0,
+                "scale" : 1,
+            })
+        }
+        
+        if( isPhoneOS6Prior || isPhoneOS7Later ){
+            params.push({
+                "idiom" : "iphone",
+                "size"  : 29.0,
+                "scale" : 2,
+            })
+        }
+        
+        if( isPhoneOS8Later ){
+            params.push({
+                "idiom" : "iphone",
+                "size"  : 29.0,
+                "scale" : 3,
+            })
+        }
+        
+        //  Spotlighte - iOS 7,8
+        if( isPhoneOS7Later ){
+            params.push({
+                "idiom" : "iphone",
+                "size"  : 40.0,
+                "scale" : 2,
+            })
+        }
+        
+        if( isPhoneOS8Later ){
+            params.push({
+                "idiom" : "iphone",
+                "size"  : 40.0,
+                "scale" : 3,
+            })
+        }
+        
+        //  App - iOS 5,6
+        if( isPhoneOS6Prior ){
+            params.push({
+                "idiom" : "iphone",
+                "size"  : 57.0,
+                "scale" : 1,
+            },{
+                "idiom" : "iphone",
+                "size"  : 57.0,
+                "scale" : 2,
+            })
+        }
+
+        //  App - iOS 7,8
+        if( isPhoneOS7Later ){
+            params.push({
+                "idiom" : "iphone",
+                "size"  : 60.0,
+                "scale" : 2,
+            })
+        }
+        
+        if( isPhoneOS8Later ){
+            params.push({
+                "idiom" : "iphone",
+                "size"  : 60.0,
+                "scale" : 3,
+            })
+        }
+
+        //  Settings - iOS 5,6,7,8
+        if( isPadOS6Prior || isPadOS7Later ){
+            params.push({
+                "idiom" : "ipad",
+                "size"  : 29.0,
+                "scale" : 1,
+            },
+            {
+                "idiom" : "ipad",
+                "size"  : 29.0,
+                "scale" : 2,
+            })
+        }
+        
+        //  Spotlighte - iOS 7,8
+        if( isPadOS7Later ){
+            params.push({
+                "idiom" : "ipad",
+                "size"  : 40.0,
+                "scale" : 1,
+            },
+            {
+                "idiom" : "ipad",
+                "size"  : 40.0,
+                "scale" : 2,
+            })
+        }
+        
+        //  Spotlighte - iOS 5,6
+        if( isPadOS6Prior ){
+            params.push({
+                "idiom" : "ipad",
+                "size"  : 50.0,
+                "scale" : 1,
+            },
+            {
+                "idiom" : "ipad",
+                "size"  : 50.0,
+                "scale" : 2,
+            })
+        }
+        
+        //  App - iOS 5,6
+        if( isPadOS6Prior ){
+            params.push({
+                "idiom" : "ipad",
+                "size"  : 72.0,
+                "scale" : 1,
+            },
+            {
+                "idiom" : "ipad",
+                "size"  : 72.0,
+                "scale" : 2,
+            })
+        }
+        
+        
+        //  App - iOS 7,8
+        if( isPadOS7Later ){
+            params.push({
+                "idiom" : "ipad",
+                "size"  : 76.0,
+                "scale" : 1,
+            },
+            {
+                "idiom" : "ipad",
+                "size"  : 76.0,
+                "scale" : 2,
+            })
+        }
+        
+        //  CarPlay
+        if( isCarPlay ){
+            params.push({
+                "idiom" : "car",
+                "size"  : 120.0,
+                "scale" : 1,
+            })
+        }
+
+        if( params.length > 0 ){
+
+            var contents = [NSMutableString string]
+            [contents appendFormat:"{\n"]
+            [contents appendFormat:"    \"images\" : [\n"]
+            
+            for( var i = 0; i < params.length ; i++ ){
+            
+                var param = params[i];
+                var size = param["size"] * param["scale"]
+
+                var data = [[NSMutableData alloc] init];
+                var dst = CGImageDestinationCreateWithData( data, "public.png", 1, nil )
+
+                var option = [NSDictionary dictionaryWithObjectsAndKeys:size/canvasSize,"scale",NO,"includeBackground",nil];
+                var image = [doc exportImage:option];
+                CGImageDestinationAddImage( dst, image, nil );
+
+                CGImageDestinationFinalize(dst)
+                CFRelease(dst)
+        
+                var file = param["idiom"]+"_"+param["size"]+"_"+param["scale"]+"x.png"
+                var fileURL = [NSURL URLWithString:file relativeToURL:directoryURL]
+                [data writeToURL:fileURL atomically:YES]
+                [data release]
+
+                [contents appendFormat:"        {\n"]
+                [contents appendFormat:"            \"size\" : \"%@x%@\",\n",param["size"],param["size"]]
+                [contents appendFormat:"            \"idiom\" : \"%@\",\n",param["idiom"]]
+                [contents appendFormat:"            \"filename\" : \"%@\",\n",file]
+                [contents appendFormat:"            \"scale\" : \"%@x\"\n",param["scale"]]
+        
+                if( i < params.length-1 ){
+                    [contents appendFormat:"        },\n"]
+                }else{
+                    [contents appendFormat:"        }\n"]
+                }
+            }
+
+            [contents appendFormat:"    ],\n"]
+
+            [contents appendFormat:"    \"info\" : {\n"]
+            [contents appendFormat:"        \"version\" : 1,\n"]
+            [contents appendFormat:"        \"author\" : \"xcode\"\n"]
+            [contents appendFormat:"    },\n"]
+
+            [contents appendFormat:"    \"properties\" : {\n"]
+            if( isPreRendered ){
+                [contents appendFormat:"        \"pre-rendered\" : true\n"]
+            }else{
+                [contents appendFormat:"        \"pre-rendered\" : false\n"]
+            }
+            [contents appendFormat:"    }\n"]
+
+            [contents appendFormat:"}"]
+
+            var fileURL = [NSURL URLWithString:"Contents.json" relativeToURL:directoryURL]
+            [contents writeToURL:fileURL atomically:YES]
+        }
+    }
+}
